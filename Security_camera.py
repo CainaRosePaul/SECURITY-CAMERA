@@ -6,9 +6,9 @@ while cam.isOpened():
     ret,frame2=cam.read()
     diff=cv2.absdiff(frame1,frame2)
     gray=cv2.cvtColor(diff,cv2.COLOR_RGB2GRAY)
-    blur=cv2.GaussianBlur(gray,(5,5),0)
-    _, thresh=cv2.threshold(blur,20,225,cv2.THRESH_BINARY)
-    dilated=cv2.dilate(thresh,None,iterations=3)
+    blur=cv2.GaussianBlur(gray,(5,5),0)//smooth noise
+    _, thresh=cv2.threshold(blur,20,225,cv2.THRESH_BINARY)//pixels with intensity > 20 become white (motion areas), others black.
+    dilated=cv2.dilate(thresh,None,iterations=3)//fills gaps to make motion blobs more solid.
     contours,_=cv2.findContours(dilated,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
     #cv2.drawContours(frame1,contours,-1,(0,255,0),2)
     for c in contours:
@@ -20,4 +20,5 @@ while cam.isOpened():
         winsound.PlaySound('mixkit-sci-fi-confirmation-914.wav', winsound.SND_ASYNC)
     if cv2.waitKey(10)==ord('q'):
         break
+
     cv2.imshow('Granny cam',frame1)
